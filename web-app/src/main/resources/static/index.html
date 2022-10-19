@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视频推流管理</title>
+</head>
+<!-- 引入样式文件 -->
+<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="css/video-js.css">
+<style>
+    .el-table .cell {
+        white-space: pre-line;
+    }
+    #logBox{
+        padding: 10px;
+        font-size: 10px;
+        width: 100%;
+        height: 780px;
+        background-color: #000000;
+        color: #7BC619;
+        white-space: pre-line;
+        overflow:auto;
+    }
+    #editor {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        color: #333;
+    }
+    textarea,
+    #editor div {
+        display: inline-block;
+        width: 100%;
+        height: 850px;
+        vertical-align: top;
+        box-sizing: border-box;
+        padding: 0 20px;
+    }
+
+    textarea {
+        border: none;
+        border-right: 1px solid #ccc;
+        resize: none;
+        outline: none;
+        background-color: #f6f6f6;
+        font-size: 10px;
+        font-family: "Monaco", courier, monospace;
+        padding: 20px;
+    }
+</style>
+<body>
+<div id="app">
+    <el-tabs v-model="activeName" @tab-click="handleClick"  v-loading.fullscreen.lock="fullscreenLoading">
+        <el-tab-pane label="任务管理中心" name="optionTab">
+            <el-row>
+                <el-col :gutter="24" >
+                    <div class="grid-content bg-purple-dark">
+                        <el-button type="primary" @click="streamList">刷新任务列表</el-button>
+                        <el-button type="primary" @click="startAll">启动所有任务</el-button>
+                        <el-button type="danger" @click="stopAll">停止所有任务</el-button>
+                        <el-button type="primary" @click="start">启动任务</el-button>
+                        <el-button type="danger" @click="stop">停止任务</el-button>
+                        <el-button type="success" @click="open">查看视频预览</el-button>
+                    </div>
+                </el-col>
+            </el-row>
+            <el-divider></el-divider>
+            <el-table
+                    v-loading="tableLoading"
+                    element-loading-text="拼命加载中"
+                    element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="listData"
+                    border
+                    height="700"
+                    @selection-change="selectionChange"
+                    style="width: 100%">
+                <el-table-column
+                        type="selection"
+                        width="55">
+                </el-table-column>
+                <el-table-column
+                        prop="streamId"
+                        label="任务ID"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="streamName"
+                        label="任务名称"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        prop="streamUrl"
+                        label="摄像头RTSP地址"
+                        width="400">
+                </el-table-column>
+                <el-table-column
+                        prop="streamPushUrl"
+                        label="NGINX服务地址"
+                        width="250">
+                </el-table-column>
+                <el-table-column
+                        show-overflow-tooltip
+                        prop="streamCmd"
+                        label="命令">
+                </el-table-column>
+                <el-table-column
+                        prop="startTime"
+                        width="200"
+                        label="开始推流时间">
+                </el-table-column>
+                <el-table-column
+                        prop="timeLong"
+                        width="200"
+                        label="已推流时长">
+                </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="直播订阅管理" name="subscribeTab">
+            <el-row>
+                <el-col :gutter="24" >
+                    <div class="grid-content bg-purple-dark">
+                        <el-button type="primary" @click="subscribeList">刷新订阅列表</el-button>
+                    </div>
+                </el-col>
+            </el-row>
+            <el-divider></el-divider>
+            <el-table
+                    v-loading="subscribeTableLoading"
+                    element-loading-text="拼命加载中"
+                    element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
+                    :data="subscribeListData"
+                    border
+                    height="700"
+                    style="width: 100%">
+                <el-table-column
+                        type="selection"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        prop="streamId"
+                        label="任务ID"
+                        width="150">
+                </el-table-column>
+                <el-table-column
+                        prop="streamName"
+                        label="任务名称"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="streamUrl"
+                        label="摄像头RTSP地址">
+                </el-table-column>
+                <el-table-column
+                        prop="subscribe"
+                        label="订阅人数"
+                        width="100">
+                </el-table-column>
+                <el-table-column width="400" label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button v-if="scope.row.streamType=='live'" type="primary" @click.stop="subscribeAdd(scope.$index, scope.row)">订阅</el-button>
+                        <el-button v-if="scope.row.streamType=='live'" type="danger" @click.stop="subscribeDelete(scope.$index, scope.row)">取消</el-button>
+                        <el-button v-if="scope.row.streamType=='tracks'" type="primary" @click.stop="subscribeTracksAdd(scope.row)">订阅</el-button>
+                        <el-button v-if="scope.row.streamType=='tracks'" type="danger" @click.stop="subscribeTracksDelete(scope.row)">取消</el-button>
+                        <el-button v-if="scope.row.streamType=='tracks'" type="danger" @click.stop="tracksVideoShow(scope.row)">设置</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-dialog title="视频回放设置"  width="30%" :visible.sync="tracksDialog">
+                <div>
+                    <el-time-select v-model="tempTracksTime" value-format="HH:mm:ss" placeholder="选择时间"></el-time-select>
+                    <el-button type="primary" @click="tracksVideoPlay">播放</el-button>
+                </div>
+            </el-dialog>
+        </el-tab-pane>
+        <el-tab-pane label="运行日志" name="logTab">
+            <el-container>
+                <el-header>
+                    <el-switch
+                            v-model="receptionLog"
+                            active-text="订阅日志"
+                            inactive-text="取消订阅"
+                            @change="setReceptionLog">
+                    </el-switch>
+                    <el-button type="danger"  @click="cleanLog">清空日志</el-button>
+                </el-header>
+                <div id="logBox" style="text-align:left;">
+                    <ul  v-for="site in logMessage">
+                        <li>{{ site.name }}</li>
+                    </ul>
+                </div>
+            </el-container>
+        </el-tab-pane>
+        <el-tab-pane label="错误日志" name="errorLogTab">
+            <el-container>
+                <div id="editor">
+                    <textarea :value="errorLogValue"></textarea>
+                </div>
+            </el-container>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+</body>
+
+<!-- 引入 Vue的 JS 文件 -->
+<script src="js/marked.js"></script>
+<script src="js/lodash.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/index.js"></script>
+<script src="js/vue-resource.js"></script>
+<!-- 引入 视频播放 文件 -->
+<script src="js/video.min.js"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                drawer:false,
+                tracksDialog:false,
+                tempTracksStreamId:'',
+                tempTracksTime:'',
+                socketPort: '8056',
+                fullscreenLoading:false,
+                tableLoading:false,
+                subscribeTableLoading:false,
+                receptionLog:true,
+                websocket: null,
+
+                selected:[],
+                activeName: 'optionTab',
+                logMessage:[],
+                errorLogValue:'',
+                keyword: '',
+                listData:[],
+                subscribeListData:[]
+            }
+        },
+        methods:{
+            selectionChange(rows){
+                this.selected = [];
+                rows.forEach(row => {
+                    this.selected.push(row.streamId);
+                });
+            },
+            streamList(){
+                this.tableLoading = true
+                let url = "/queryData";
+                this.$http.get(url).then((response)=>{
+                    this.tableLoading = false;
+                    this.listData = response.body.data;
+                },(error)=>{
+                    this.tableLoading = false;
+                    this.$message('列表获取失败'+error);
+                })
+            },
+            subscribeList(){
+                this.subscribeTableLoading = true
+                let url = "/subscribeList";
+                this.$http.get(url).then((response)=>{
+                    this.subscribeTableLoading = false;
+                    this.subscribeListData = response.body.data;
+                },(error)=>{
+                    this.subscribeTableLoading = false;
+                    this.$message('列表获取失败'+error);
+                })
+            },
+            subscribeAdd(params,row){
+                let logData = {
+                    type:"type_subscribe_live",
+                    data: row.streamId
+                };
+                this.subscribeTableLoading = true
+                this.websocketSend(JSON.stringify(logData))
+                let self = this;
+                setTimeout(()=>{
+                    self.subscribeList();
+                },2000);
+            },
+            subscribeDelete(params,row){
+                let logData = {
+                    type:"type_unsubscribe_live",
+                    data: row.streamId
+                };
+                this.subscribeTableLoading = true
+                this.websocketSend(JSON.stringify(logData))
+                let self = this;
+                setTimeout(()=>{
+                    self.subscribeList();
+                },2000);
+            },
+            subscribeTracksAdd(row){
+                let logData = {
+                    type:"type_subscribe_tracks",
+                    data: row.streamId+"&20221016t053012z"
+                };
+                this.subscribeTableLoading = true
+                this.websocketSend(JSON.stringify(logData))
+                let self = this;
+                setTimeout(()=>{
+                    self.subscribeList();
+                },2000);
+            },
+            subscribeTracksDelete(row){
+                let logData = {
+                    type:"type_unsubscribe_tracks",
+                    data: row.streamId
+                };
+                this.subscribeTableLoading = true
+                this.websocketSend(JSON.stringify(logData))
+                let self = this;
+                setTimeout(()=>{
+                    self.subscribeList();
+                },2000);
+            },
+            tracksVideoShow(row){
+                this.tracksDialog = true
+                this.tempTracksStreamId = row.streamId
+            },
+            tracksVideoPlay(){
+                let deleteData = {
+                    type:"type_unsubscribe_tracks",
+                    data: this.tempTracksStreamId
+                };
+                this.websocketSend(JSON.stringify(deleteData))
+                console.log("删除订阅：",this.tempTracksStreamId)
+                let startData = {
+                    type:"type_subscribe_tracks",
+                    data: this.tempTracksStreamId+"&20221016t"+this.tempTracksTime.replaceAll(":","")+"00z"
+                };
+                this.subscribeTableLoading = true
+                this.websocketSend(JSON.stringify(startData))
+                console.log("开始订阅：",this.tempTracksStreamId)
+                let self = this;
+                setTimeout(()=>{
+                    self.subscribeList();
+                },2000);
+            },
+            startAll(){
+                this.fullscreenLoading = true;
+                let url = "/pushAll";
+                this.$http.get(url).then((response)=>{
+                    this.fullscreenLoading = false;
+                    this.streamList();
+                },(error)=>{
+                    this.fullscreenLoading = false;
+                    this.$message('启动失败'+error);
+                })
+            },
+            stopAll(){
+                this.fullscreenLoading = true;
+                let url = "/stopAll";
+                this.$http.get(url).then((response)=>{
+                    this.fullscreenLoading = false;
+                    this.streamList();
+                },(error)=>{
+                    this.fullscreenLoading = false;
+                    this.$message('停止失败'+error);
+                })
+            },
+            start(){
+                let length = this.selected.length
+                if(length == 0){
+                    this.$message('最少选择一条数据');
+                    return;
+                }else if(length != 1){
+                    this.$message('只能选择一条数据');
+                    return;
+                }
+                let url = "/push/"+this.selected[0];
+                this.$http.get(url).then((response)=>{
+                    this.fullscreenLoading = false;
+                    //this.streamList();
+                },(error)=>{
+                    this.fullscreenLoading = false;
+                    this.$message('启动失败'+error);
+                })
+            },
+            stop(){
+                let length = this.selected.length
+                if(length == 0){
+                    this.$message('最少选择一条数据');
+                    return;
+                }else if(length != 1){
+                    this.$message('只能选择一条数据');
+                    return;
+                }
+                let url = "/stop/"+this.selected[0];
+                this.$http.get(url).then((response)=>{
+                    this.fullscreenLoading = false;
+                    this.streamList();
+                },(error)=>{
+                    this.fullscreenLoading = false;
+                    this.$message('停止失败'+error);
+                })
+            },
+            handleClick(key, keyPath) {
+                if(key.name === "errorLogTab"){
+                    this.loadErrorLog();
+                }
+            },
+            loadErrorLog(){
+                let url = "/loadErrorLog";
+                this.$http.get(url).then((response)=>{
+                    this.errorLogValue = response.bodyText;
+                },(error)=>{
+                    this.$message('错误日志加载失败'+error);
+                })
+            },
+            open(){
+                let url = "http://"+window.location.hostname+"/index.html";
+                window.open(url, '_blank')
+            },
+            cleanLog(){
+                this.logMessage = [];
+            },
+            initWebSocket(){
+                //初始化websocket
+                let logId = localStorage.getItem("logId");
+                if(!logId){
+                    logId = this.done(5, 9);
+                    localStorage.setItem("logId",logId)
+                }
+                const wsUri = "ws://"+window.location.hostname+":"+this.socketPort+"/websocket/"+logId;
+                this.websocket = new WebSocket(wsUri);
+                this.websocket.onmessage = this.websocketOnmessage;
+                this.websocket.onopen = this.websocketOpen;
+                this.websocket.onerror = this.websocketError;
+                this.websocket.onclose = this.websocketClose;
+            },
+            websocketOpen(){ //连接建立之后执行send方法发送数据
+                console.log("连接成功")
+            },
+            websocketError(){//连接建立失败重连
+                this.initWebSocket();
+            },
+            websocketOnmessage(e){
+                //console.log("====",e)
+                if(this.logMessage.length > 100){
+                    this.logMessage = [];
+                }
+                let message = JSON.parse(e.data)
+                this.logMessage.push({"name":message.data});
+                let container = this.$el.querySelector("#logBox");
+                container.scrollTop = container.scrollHeight;
+            },
+            websocketSend(Data){//数据发送
+                this.websocket.send(Data);
+            },
+            websocketClose(e){  //关闭
+                this.$message('日志服务断开连接：'+e);
+            },
+            beforeCreate(){
+                this.fullscreenLoading = true;
+            },
+            refund(){
+            },
+            done(len, max) {
+                var arr = [];
+                var result = "";
+                var count = 0;
+                while (count < len) {
+                    var n = Math.floor(Math.random() * max + 1);
+                    if (arr.join().indexOf(n) == -1) {
+                        arr.push(n);
+                        count++;
+                    }
+                }
+                for (let index = 0; index < arr.length; index++) {
+                    result = result + arr[index];
+                }
+                return result;
+            },
+            setReceptionLog(status){
+                let logData = {
+                    type:"type_log",
+                    data:status
+                };
+                this.websocketSend(JSON.stringify(logData))
+            }
+        },
+        created(){
+            this.streamList()
+            this.subscribeList()
+            this.initWebSocket()
+            this.loadErrorLog()
+        },
+        mounted(){
+            this.fullscreenLoading = false;
+        }
+    });
+</script>
+
+</html>

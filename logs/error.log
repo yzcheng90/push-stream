@@ -1,0 +1,30 @@
+2022-10-19 09:29:06,217 [Thread-12] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:31 - live1任务可能发生故障： Connection to tcp://127.0.0.1:1935?tcp_nodelay=0 failed: Error number -138 occurred
+2022-10-19 09:29:06,217 [Thread-4] ERROR [c.s.axsc.common.push.handler.ProcessWatchHandler] ProcessWatchHandler.java:49 - taskId:live1 进程可能挂了，没有日志输出
+2022-10-19 09:29:06,219 [Thread-12] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:32 - 失败，设置中断状态
+2022-10-19 09:29:06,219 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]
+2022-10-19 09:29:06,219 [Thread-12] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:06,219 [Thread-12] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:16,683 [Thread-13] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:31 - live1任务可能发生故障：[tcp @ 000001c3035d0f00] Connection to tcp://127.0.0.1:1935?tcp_nodelay=0 failed: Error number -138 occurred
+2022-10-19 09:29:16,683 [Thread-13] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:32 - 失败，设置中断状态
+2022-10-19 09:29:16,683 [Thread-13] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:16,683 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]
+2022-10-19 09:29:27,181 [Thread-14] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:31 - live1任务可能发生故障：[tcp @ 000001ab85ecee00] Connection to tcp://127.0.0.1:1935?tcp_nodelay=0 failed: Error number -138 occurred
+2022-10-19 09:29:27,181 [Thread-14] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:32 - 失败，设置中断状态
+2022-10-19 09:29:27,181 [Thread-14] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:27,181 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]
+2022-10-19 09:29:37,665 [Thread-15] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:31 - live1任务可能发生故障：[tcp @ 000001f5f4e90f00] Connection to tcp://127.0.0.1:1935?tcp_nodelay=0 failed: Error number -138 occurred
+2022-10-19 09:29:37,665 [Thread-15] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:32 - 失败，设置中断状态
+2022-10-19 09:29:37,665 [Thread-15] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:37,666 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]
+2022-10-19 09:29:48,135 [Thread-16] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:31 - live1任务可能发生故障：[tcp @ 000002c0001fed00] Connection to tcp://127.0.0.1:1935?tcp_nodelay=0 failed: Error number -138 occurred
+2022-10-19 09:29:48,135 [Thread-16] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:32 - 失败，设置中断状态
+2022-10-19 09:29:48,135 [Thread-16] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:48,135 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]
+2022-10-19 09:29:48,136 [Thread-16] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:41 - live1任务可能发生网络故障：rtmp://127.0.0.1:1935/hls/live1: Unknown error
+2022-10-19 09:29:48,136 [Thread-16] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:42 - 失败，设置中断状态
+2022-10-19 09:29:48,136 [Thread-16] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:48,141 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]
+2022-10-19 09:29:58,602 [Thread-18] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:31 - live1任务可能发生故障：[tcp @ 000002453f03eb40] Connection to tcp://127.0.0.1:1935?tcp_nodelay=0 failed: Error number -138 occurred
+2022-10-19 09:29:58,602 [Thread-18] ERROR [com.suke.axsc.web.handler.CustomOutHandlerMethod] CustomOutHandlerMethod.java:32 - 失败，设置中断状态
+2022-10-19 09:29:58,602 [Thread-18] ERROR [com.suke.axsc.common.push.handler.OutHandler] OutHandler.java:105 - 检测到中断，提交重启任务给保活处理器
+2022-10-19 09:29:58,602 [Thread-3] ERROR [com.suke.axsc.common.push.handler.KeepAliveHandler] KeepAliveHandler.java:73 - 准备重启任务：[live1]

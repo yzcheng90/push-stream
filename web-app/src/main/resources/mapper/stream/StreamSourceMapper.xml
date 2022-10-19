@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.suke.axsc.web.stream.mapper.StreamSourceMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.suke.axsc.web.stream.entity.StreamSource" id="StreamSourceMap">
+        <result property="streamId" column="stream_id"/>
+        <result property="streamName" column="stream_name"/>
+        <result property="streamUrl" column="stream_url"/>
+        <result property="streamPushUrl" column="stream_push_url"/>
+        <result property="streamCmd" column="stream_cmd"/>
+        <result property="streamStatus" column="stream_status"/>
+        <result property="startTime" column="start_time"/>
+    </resultMap>
+
+</mapper>

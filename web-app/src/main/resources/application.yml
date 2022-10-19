@@ -1,0 +1,38 @@
+server:
+  port: 8055
+  tomcat:
+    max-threads: 5000
+    max-connections: 10000
+    accept-count: 3000
+    max-http-form-post-size: 100MB
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: suke172839456
+    url: jdbc:mysql://192.168.0.5:3306/axsc_push_stream?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*Mapper.xml
+  global-config:
+    banner: false
+    db-config:
+      id-type: 0
+      field-strategy: 1
+      table-underline: false
+  configuration:
+    map-underscore-to-camel-case: true
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+ws:
+  host: 0.0.0.0
+  port: 8056
+
+push-stream:
+  ffmpegPath: J:/rtsp_live/ffmpeg-master-latest-win64-gpl/bin/
+  taskSize: 10
+  keepalive: true
+  debug: true
+
