@@ -3,6 +3,7 @@
 基于([FFCH4J](https://github.com/eguid/FFCH4J)) 修改
 
 **项目说明** 
+
 - 本项目使用spingboot开发
 - 支持摄像头直播和回放推流
 - 支持web播放
@@ -10,10 +11,12 @@
 - 欢迎大家一起交流学习
 
 **环境需要** 
+
 - ffmpeg
 - nginx (windows 直接下载Gryphon版本，linux下载nginx-rtmp-module自行编译)
 
 **项目截图** 
+
 ![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/1.png)
 ![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/2.png)
 ![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/3.png)
@@ -21,6 +24,7 @@
 ![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/5.png)
 
 **nginx 配置**
+
 ```
 worker_processes  2;
 
