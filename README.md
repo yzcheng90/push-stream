@@ -17,11 +17,11 @@
 
 **项目截图** 
 
-![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/1.png)
-![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/2.png)
-![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/3.png)
-![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/4.png)
-![Image text](https://github.com/yzcheng90/push-stream/blob/master/doc/5.png)
+![Image text](https://github.com/yzcheng90/push-stream/blob/main/doc/1.png)
+![Image text](https://github.com/yzcheng90/push-stream/blob/main/doc/2.png)
+![Image text](https://github.com/yzcheng90/push-stream/blob/main/doc/3.png)
+![Image text](https://github.com/yzcheng90/push-stream/blob/main/doc/4.png)
+![Image text](https://github.com/yzcheng90/push-stream/blob/main/doc/5.png)
 
 **nginx 配置**
 
